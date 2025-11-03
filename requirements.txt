@@ -50,8 +50,11 @@ chromadb==0.4.22
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.0.0+cpu
 
-# Sentence Transformers (will use CPU PyTorch)
-sentence-transformers>=2.7.0
+# Sentence Transformers (pin compatible versions)
+sentence-transformers==2.7.0
+huggingface-hub==0.23.0
+transformers==4.40.0
+tokenizers==0.19.1
 
 # ONNX Runtime (CPU-only)
 onnxruntime==1.23.2
