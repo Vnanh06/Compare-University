@@ -123,9 +123,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Whitenoise configuration for serving static files
-# Use basic storage (no manifest) to avoid missing manifest errors
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
+# Django 4.2+ uses STORAGES (not STATICFILES_STORAGE)
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -134,6 +132,9 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
+
+# Disable manifest strict mode to avoid missing file errors
+WHITENOISE_MANIFEST_STRICT = False
 
 # Media files
 MEDIA_URL = '/media/'
