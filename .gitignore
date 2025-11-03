@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ChromaDB
+chromadb_data/
+
+# Database exports (can be large)
+database_export.json
+*.bacpac
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Logs
+/logs/
+django.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Railway
+.railway/
