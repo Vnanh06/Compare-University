@@ -1,3 +1,8 @@
+# ============================================
+# PRODUCTION REQUIREMENTS (Optimized for Railway)
+# Image size: ~2-3GB (vs 6GB with full dependencies)
+# ============================================
+
 # Django Framework
 Django==4.2.7
 
@@ -5,35 +10,59 @@ Django==4.2.7
 gunicorn==21.2.0
 whitenoise==6.6.0
 
-# Database - PostgreSQL (for Railway deployment)
+# Database - PostgreSQL
 psycopg2-binary==2.9.9
 dj-database-url==2.1.0
 
-# Database - SQL Server support (for local development only)
-# mssql-django==1.5
-# pyodbc>=4.0.39
-pytz>=2023.3
-
-# For development and testing
+# Configuration
 python-decouple==3.8
-
-# Development utilities
 python-dotenv==1.0.0
+pytz>=2023.3
 
 # Date/time utilities
 python-dateutil==2.8.2
 
-# Additional packages for charset
+# Network & HTTP
 charset-normalizer==3.3.0
 urllib3==2.0.7
 certifi==2023.11.17
 idna==3.6
 
-# Gemini AI and RAG dependencies
-numpy<2.0
-protobuf>=3.19.5,<5.0.0
+# ============================================
+# AI & ML (CPU-ONLY versions - Much lighter!)
+# ============================================
+
+# Google Gemini AI
 google-generativeai==0.3.2
+google-ai-generativelanguage==0.4.0
+google-api-core==2.28.1
+google-auth==2.42.1
+googleapis-common-protos==1.71.0
+grpcio==1.76.0
+grpcio-status==1.62.3
+proto-plus==1.26.1
+protobuf>=4.21.0,<5.0.0
+
+# ChromaDB (Vector Database)
 chromadb==0.4.22
+
+# PyTorch CPU-ONLY (MUCH lighter - no CUDA!)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.0+cpu
+
+# Sentence Transformers (will use CPU PyTorch)
 sentence-transformers>=2.7.0
-onnxruntime
-torch==2.0.0
+
+# ONNX Runtime (CPU-only)
+onnxruntime==1.23.2
+
+# NumPy (required by ML libs)
+numpy<2.0
+
+# ============================================
+# Notes:
+# - PyTorch CPU version is ~200MB vs 2GB for CUDA version
+# - Removes all nvidia-* packages (saves ~1-2GB)
+# - ChromaDB will run on CPU (slower but acceptable for small datasets)
+# - Sentence transformers will use CPU PyTorch automatically
+# ============================================
