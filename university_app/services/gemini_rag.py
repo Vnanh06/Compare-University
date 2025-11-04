@@ -18,9 +18,10 @@ class GeminiChatbotRAG:
         self.model = genai.GenerativeModel('models/gemini-2.5-flash')
 
         # 2. ChromaDB với Sentence Transformers (FREE embedding)
+        # Use lighter model: distiluse (220MB) vs MiniLM-L12 (420MB)
         self.client = chromadb.PersistentClient(path="./chromadb_data")
         self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="paraphrase-multilingual-MiniLM-L12-v2"
+            model_name="distiluse-base-multilingual-cased-v2"  # 50% lighter, still multilingual
         )
 
         # 3. Tạo collection
@@ -252,7 +253,7 @@ Vui lòng thử lại hoặc liên hệ quản trị viên nếu lỗi vẫn ti�
             return {
                 'total_universities': count,
                 'collection_name': 'universities_gemini',
-                'embedding_model': 'paraphrase-multilingual-MiniLM-L12-v2'
+                'embedding_model': 'distiluse-base-multilingual-cased-v2'
             }
         except Exception as e:
             logger.error(f"Lỗi khi lấy thống kê: {str(e)}")

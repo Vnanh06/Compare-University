@@ -26,9 +26,12 @@ echo "Starting Gunicorn on 0.0.0.0:$PORT..."
 exec gunicorn university_project.wsgi \
     --bind "0.0.0.0:$PORT" \
     --timeout 120 \
-    --workers 2 \
+    --workers 1 \
+    --threads 4 \
+    --worker-class gthread \
     --max-requests 1000 \
     --max-requests-jitter 50 \
+    --worker-tmp-dir /dev/shm \
     --access-logfile - \
     --error-logfile - \
     --log-level info
