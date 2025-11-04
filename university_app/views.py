@@ -956,12 +956,51 @@ def luu_ket_qua_so_sanh(request):
         'message': 'Phương thức không được hỗ trợ.'
     })
 
+# ============================================================================
+# SINGLETON CHATBOT INSTANCE (Memory Optimization for 1GB RAM limit)
+# ============================================================================
+# Create chatbot instance ONCE and reuse for all requests
+# This prevents loading 800MB of ML models on every single request
+_chatbot_instance = None
+_chatbot_lock = None
+
+def get_chatbot_instance():
+    """
+    Get or create global chatbot instance (thread-safe singleton)
+
+    Returns:
+        GeminiChatbotRAG: Singleton chatbot instance
+    """
+    global _chatbot_instance, _chatbot_lock
+
+    # Initialize lock on first call
+    if _chatbot_lock is None:
+        import threading
+        _chatbot_lock = threading.Lock()
+
+    # Double-check locking pattern for thread safety
+    if _chatbot_instance is None:
+        with _chatbot_lock:
+            if _chatbot_instance is None:
+                from .services.gemini_rag import GeminiChatbotRAG
+
+                logger.info("=" * 60)
+                logger.info("🤖 Initializing chatbot instance for the FIRST time...")
+                logger.info("   This will load ~800MB of ML models into RAM")
+                logger.info("   Subsequent requests will REUSE this instance")
+                logger.info("=" * 60)
+
+                _chatbot_instance = GeminiChatbotRAG()
+
+                logger.info("✅ Chatbot instance created and cached!")
+                logger.info("   Ready to serve requests")
+
+    return _chatbot_instance
+
 def chatbot_gemini(request):
-    """API cho chatbot Gemini RAG - 100% MIỄN PHÍ"""
+    """API cho chatbot Gemini RAG - 100% MIỄN PHÍ (with singleton optimization)"""
     if request.method == 'POST':
         try:
-            from .services.gemini_rag import GeminiChatbotRAG
-
             data = json.loads(request.body)
             user_message = data.get('message', '').strip()
 
@@ -971,8 +1010,8 @@ def chatbot_gemini(request):
                     'message': 'Vui lòng nhập câu hỏi'
                 })
 
-            # Gọi Gemini RAG chatbot
-            chatbot = GeminiChatbotRAG()
+            # Get singleton chatbot instance (reuse existing, don't recreate!)
+            chatbot = get_chatbot_instance()
             answer = chatbot.chat(user_message)
 
             return JsonResponse({
@@ -980,6 +1019,12 @@ def chatbot_gemini(request):
                 'answer': answer
             })
 
+        except MemoryError:
+            logger.error("❌ Out of memory when initializing or using chatbot")
+            return JsonResponse({
+                'success': False,
+                'message': 'Chatbot tạm thời quá tải do giới hạn RAM. Vui lòng thử lại sau hoặc liên hệ admin để nâng cấp server.'
+            })
         except Exception as e:
             logger.error(f"Lỗi chatbot Gemini API: {str(e)}")
             return JsonResponse({
