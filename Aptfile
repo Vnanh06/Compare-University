@@ -1,0 +1,5 @@
+# System dependencies for Railway/Heroku buildpack
+# Required for ChromaDB vector database
+libsqlite3-0
+sqlite3
+libsqlite3-dev
