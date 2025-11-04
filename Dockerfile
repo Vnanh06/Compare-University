@@ -63,7 +63,8 @@ RUN mkdir -p /app/.cache/huggingface /app/.cache/sentence-transformers && \
     chown -R appuser:appuser /app/.cache
 
 # Pre-download ML models to cache AS ROOT (has write permissions)
-RUN python download_models.py || echo "⚠️ Failed to pre-download models"
+# Show full error if fails
+RUN python download_models.py 2>&1 || (echo "⚠️ Failed to pre-download models" && exit 0)
 
 # Switch to non-root user AFTER downloading models
 USER appuser
