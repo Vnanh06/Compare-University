@@ -46,6 +46,10 @@ COPY --chown=appuser:appuser . .
 RUN mkdir -p /app/staticfiles /app/media /app/chromadb_data && \
     chown -R appuser:appuser /app
 
+# Copy and set permissions for entrypoint script (as root before USER switch)
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh && chown appuser:appuser /app/docker-entrypoint.sh
+
 # Switch to non-root user
 USER appuser
 
@@ -64,5 +68,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8080/', timeout=5)" || exit 1
 
-# Start command (Railway will override with Procfile if present)
-CMD gunicorn university_project.wsgi --bind 0.0.0.0:$PORT --timeout 120 --workers 2 --max-requests 1000 --max-requests-jitter 50
+# Use entrypoint script to handle PORT variable properly
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
