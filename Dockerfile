@@ -50,16 +50,23 @@ RUN mkdir -p /app/staticfiles /app/media /app/chromadb_data && \
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh && chown appuser:appuser /app/docker-entrypoint.sh
 
-# Switch to non-root user
-USER appuser
-
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PORT=8080
+    PORT=8080 \
+    HF_HOME=/app/.cache/huggingface \
+    TRANSFORMERS_CACHE=/app/.cache/huggingface \
+    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence-transformers
 
-# Pre-download ML models to cache (avoid runtime download & OOM)
-RUN python download_models.py || echo "Failed to pre-download models, will download at runtime"
+# Create cache directories and set permissions BEFORE switching user
+RUN mkdir -p /app/.cache/huggingface /app/.cache/sentence-transformers && \
+    chown -R appuser:appuser /app/.cache
+
+# Pre-download ML models to cache AS ROOT (has write permissions)
+RUN python download_models.py || echo "⚠️ Failed to pre-download models"
+
+# Switch to non-root user AFTER downloading models
+USER appuser
 
 # Collect static files
 RUN python manage.py collectstatic --noinput || true

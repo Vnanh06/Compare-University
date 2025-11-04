@@ -12,6 +12,13 @@ print("  Pre-downloading ML Models for Chatbot")
 print("=" * 60)
 print()
 
+# Show cache directories
+print("📁 Cache directories:")
+print(f"   HF_HOME: {os.getenv('HF_HOME', 'not set')}")
+print(f"   TRANSFORMERS_CACHE: {os.getenv('TRANSFORMERS_CACHE', 'not set')}")
+print(f"   SENTENCE_TRANSFORMERS_HOME: {os.getenv('SENTENCE_TRANSFORMERS_HOME', 'not set')}")
+print()
+
 # 1. Download Sentence Transformer model
 print("📦 Downloading Sentence Transformer model...")
 print("   Model: paraphrase-multilingual-MiniLM-L12-v2 (~420MB)")
