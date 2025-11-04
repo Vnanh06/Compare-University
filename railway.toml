@@ -4,7 +4,7 @@
 [build]
 # Use Dockerfile (has SQLite3 pre-installed)
 builder = "dockerfile"
-buildCommand = "pip cache purge && pip install --no-cache-dir -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py rebuild_chatbot"
+buildCommand = "pip cache purge && pip install --no-cache-dir -r requirements.txt && python download_models.py && python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py rebuild_chatbot"
 
 [deploy]
 # Use entrypoint script from Dockerfile (handles PORT correctly)

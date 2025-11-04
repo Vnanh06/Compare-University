@@ -58,6 +58,9 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=8080
 
+# Pre-download ML models to cache (avoid runtime download & OOM)
+RUN python download_models.py || echo "Failed to pre-download models, will download at runtime"
+
 # Collect static files
 RUN python manage.py collectstatic --noinput || true
 
