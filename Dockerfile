@@ -14,10 +14,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sqlite3 \
     && rm -rf /var/lib/apt/lists/*
 
+# Set cache environment variables for builder stage
+ENV HF_HOME=/app/.cache/huggingface \
+    TRANSFORMERS_CACHE=/app/.cache/huggingface \
+    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence-transformers
+
+# Create cache directories in builder
+RUN mkdir -p /app/.cache/huggingface /app/.cache/sentence-transformers
+
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
+
+# Pre-download ML models in builder stage (before copying to production)
+COPY download_models.py .
+RUN python download_models.py || echo "⚠️ Model download failed in builder stage"
 
 # Production stage
 FROM python:3.11-slim-bookworm
@@ -42,6 +54,10 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copy application code
 COPY --chown=appuser:appuser . .
 
+# IMPORTANT: Copy ML model cache from builder stage to avoid re-downloading at runtime
+# This prevents OOM errors caused by downloading 420MB model when worker starts
+COPY --from=builder /app/.cache /app/.cache
+
 # Create directories for Django
 RUN mkdir -p /app/staticfiles /app/media /app/chromadb_data && \
     chown -R appuser:appuser /app
@@ -58,15 +74,10 @@ ENV PYTHONUNBUFFERED=1 \
     TRANSFORMERS_CACHE=/app/.cache/huggingface \
     SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence-transformers
 
-# Create cache directories and set permissions BEFORE switching user
-RUN mkdir -p /app/.cache/huggingface /app/.cache/sentence-transformers && \
-    chown -R appuser:appuser /app/.cache
+# Set correct permissions for cache directory (copied from builder)
+RUN chown -R appuser:appuser /app/.cache
 
-# Pre-download ML models to cache AS ROOT (has write permissions)
-# Show full error if fails
-RUN python download_models.py 2>&1 || (echo "⚠️ Failed to pre-download models" && exit 0)
-
-# Switch to non-root user AFTER downloading models
+# Switch to non-root user
 USER appuser
 
 # Collect static files
