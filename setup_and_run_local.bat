@@ -2,8 +2,8 @@
 chcp 65001 >nul 2>&1
 
 echo ============================================
-echo    SETUP AND RUN DJANGO PROJECT
-echo      SQL Server + Existing Database
+echo    LOCAL DEVELOPMENT SETUP
+echo    Windows + SQL Server + AI Chatbot
 echo ============================================
 
 echo [1/8] Checking Python installation...
@@ -37,10 +37,30 @@ echo [4/8] Activating virtual environment...
 call venv\Scripts\activate.bat
 echo SUCCESS: Virtual environment activated
 
-echo [5/8] Installing packages from requirements.txt...
+echo [5/8] Installing packages for LOCAL DEVELOPMENT...
+echo Using requirements-local.txt (SQL Server, no PostgreSQL)
 echo This may take 5-10 minutes, please wait...
+echo.
+
 pip install --upgrade pip
-pip install -r requirements.txt
+
+echo Installing packages from requirements-local.txt...
+pip install -r requirements-local.txt
+
+if errorlevel 1 (
+    echo.
+    echo ============================================
+    echo ERROR: Package installation failed!
+    echo ============================================
+    echo.
+    echo Common fixes:
+    echo 1. Make sure you have internet connection
+    echo 2. Try running as Administrator
+    echo 3. Check if antivirus is blocking pip
+    echo.
+    pause
+    exit /b 1
+)
 
 echo SUCCESS: All packages installed
 

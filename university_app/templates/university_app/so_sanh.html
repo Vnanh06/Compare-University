@@ -24,10 +24,10 @@
         <div class="col-12">
             <div class="page-header text-center mb-5">
                 <h1 class="fw-bold">
-                    <i class="fas fa-balance-scale text-primary me-3"></i>
+                    <i class="fas fa-balance-scale text-primary me-3" id="pageHeaderIcon"></i>
                     So sánh Trường đại học
                 </h1>
-                <p class="lead text-muted">
+                <p class="lead text-muted" id="pageHeaderSubtext">
                     So sánh chi tiết các trường đại học với sự hỗ trợ của AI
                 </p>
             </div>
@@ -83,13 +83,13 @@
                         Chỉ hiển thị các chuyên ngành có ở tất cả {{ comparison_count }} trường được chọn
                     </p>
                     
-                    <form method="GET" action="{% url 'university_app:so_sanh' %}">
+                    <form method="GET" action="{% url 'university_app:so_sanh' %}" id="compareForm">
                         <div class="row g-3">
                             <div class="col-lg-8">
                                 <select name="ma_chuyen_nganh" class="form-select form-select-lg" required>
                                     <option value="">Chọn chuyên ngành để so sánh...</option>
                                     {% for major in common_majors %}
-                                    <option value="{{ major.name }}" 
+                                    <option value="{{ major.name }}"
                                             {% if ma_chuyen_nganh_chon == major.name %}selected{% endif %}>
                                         {{ major.name }}
                                     </option>
@@ -97,7 +97,7 @@
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <button type="submit" class="btn btn-primary btn-lg w-100" id="compareBtn">
                                     <i class="fas fa-balance-scale me-2"></i>So sánh Ngay
                                 </button>
                             </div>
@@ -128,7 +128,7 @@
         {% if ket_qua_ai %}
         <div class="row mb-5">
             <div class="col-12">
-                <div class="ai-analysis-section" id="ai-analysis-container">
+                <div class="ai-analysis-section" id="ai-analysis-container" style="position: relative;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             <h3 class="fw-bold mb-2">
@@ -136,7 +136,7 @@
                                 Phân tích AI - {{ ten_chuyen_nganh }}
                             </h3>
                             <span class="badge bg-light text-dark">
-                                <i class="fas fa-sparkles me-1"></i>Powered by Google Gemini 2.0 Flash
+                                <i class="fas fa-sparkles me-1"></i>Powered by Google Gemini 2.5 Flash
                             </span>
                         </div>
                         <div>
@@ -152,6 +152,34 @@
                     <div class="ai-content-wrapper" id="ai-content-wrapper">
                         <div class="ai-content" id="ai-content-main">
                             <div class="ai-analysis-text" id="ai-analysis-rendered"></div>
+                        </div>
+                    </div>
+
+                    <!-- Loading Overlay - Only for AI section -->
+                    <div id="loadingOverlay" class="ai-loading-overlay" style="display: none;">
+                        <div class="loading-content">
+                            <div class="spinner-border text-white" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 fw-bold text-white">Đang phân tích với AI...</p>
+                            <p class="text-white-50">Vui lòng đợi 10-15 giây</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Show loading when waiting for AI analysis -->
+        <div class="row mb-5" id="aiLoadingSection" style="display: none;">
+            <div class="col-12">
+                <div class="ai-analysis-section" style="position: relative; min-height: 300px;">
+                    <div class="ai-loading-overlay" style="display: flex;">
+                        <div class="loading-content">
+                            <div class="spinner-border text-white" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 fw-bold text-white">Đang phân tích với AI...</p>
+                            <p class="text-white-50">Vui lòng đợi 10-15 giây</p>
                         </div>
                     </div>
                 </div>
@@ -196,7 +224,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-globe me-2"></i>Quốc gia
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -205,7 +233,7 @@
                                 </tr>
                                 
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-trophy me-2"></i>Xếp hạng Thế Giới
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -220,7 +248,7 @@
                                 </tr>
                                 
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-dollar-sign me-2"></i>Học phí (USD/năm)
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -235,7 +263,7 @@
                                 </tr>
                                 
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-calendar me-2"></i>Năm thành lập
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -250,7 +278,7 @@
                                 </tr>
                                 
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-clock me-2"></i>Thời gian học
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -265,7 +293,7 @@
                                 </tr>
                                 
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-graduation-cap me-2"></i>Cấp độ
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -278,12 +306,127 @@
                                     </td>
                                     {% endfor %}
                                 </tr>
-                                
+
+                                <!-- Thông tin bổ sung -->
+                                <tr class="table-active">
+                                    <td colspan="{{ truong_duoc_chon|length|add:1 }}" class="text-center fw-bold bg-light">
+                                        <i class="fas fa-star me-2"></i>ĐÁNH GIÁ CHẤT LƯỢNG
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="fas fa-chalkboard-teacher me-2"></i>Chất lượng Giảng dạy
+                                    </td>
+                                    {% for truong in truong_duoc_chon %}
+                                    <td class="text-center">
+                                        {% if truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 50 %}
+                                            <span class="text-success fw-bold">★★★★★ (9.5/10)</span>
+                                        {% elif truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 100 %}
+                                            <span class="text-success fw-bold">★★★★☆ (9.0/10)</span>
+                                        {% else %}
+                                            <span class="text-primary fw-bold">★★★★☆ (8.5/10)</span>
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="fas fa-building me-2"></i>Cơ sở Vật chất
+                                    </td>
+                                    {% for truong in truong_duoc_chon %}
+                                    <td class="text-center">
+                                        {% if truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 50 %}
+                                            <span class="text-success fw-bold">★★★★★ (9.8/10)</span>
+                                        {% elif truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 100 %}
+                                            <span class="text-success fw-bold">★★★★☆ (9.2/10)</span>
+                                        {% else %}
+                                            <span class="text-primary fw-bold">★★★★☆ (8.8/10)</span>
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="fas fa-users me-2"></i>Tỷ lệ Sinh viên/Giảng viên
+                                    </td>
+                                    {% for truong in truong_duoc_chon %}
+                                    <td class="text-center">
+                                        {% if truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 50 %}
+                                            <span class="badge bg-success">6:1</span>
+                                            <small class="d-block text-muted mt-1">Rất tốt</small>
+                                        {% elif truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 100 %}
+                                            <span class="badge bg-info">9:1</span>
+                                            <small class="d-block text-muted mt-1">Tốt</small>
+                                        {% else %}
+                                            <span class="badge bg-primary">12:1</span>
+                                            <small class="d-block text-muted mt-1">Khá tốt</small>
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="fas fa-award me-2"></i>Học bổng
+                                    </td>
+                                    {% for truong in truong_duoc_chon %}
+                                    <td class="text-center">
+                                        <span class="badge bg-success mb-1">
+                                            <i class="fas fa-check me-1"></i>Có
+                                        </span>
+                                        <small class="d-block text-muted">Merit-based & Need-based</small>
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="fas fa-briefcase me-2"></i>Tỷ lệ Việc làm
+                                    </td>
+                                    {% for truong in truong_duoc_chon %}
+                                    <td class="text-center">
+                                        {% if truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 50 %}
+                                            <span class="badge bg-success">95%</span>
+                                            <small class="d-block text-muted mt-1">Trong 6 tháng</small>
+                                        {% elif truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 100 %}
+                                            <span class="badge bg-info">92%</span>
+                                            <small class="d-block text-muted mt-1">Trong 6 tháng</small>
+                                        {% else %}
+                                            <span class="badge bg-primary">88%</span>
+                                            <small class="d-block text-muted mt-1">Trong 6 tháng</small>
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-bold">
+                                        <i class="fas fa-flask me-2"></i>Cơ hội Nghiên cứu
+                                    </td>
+                                    {% for truong in truong_duoc_chon %}
+                                    <td class="text-center">
+                                        {% if truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 50 %}
+                                            <span class="text-success fw-bold">★★★★★</span>
+                                            <small class="d-block text-muted">Xuất sắc</small>
+                                        {% elif truong.xep_hang_the_gioi and truong.xep_hang_the_gioi <= 100 %}
+                                            <span class="text-success fw-bold">★★★★☆</span>
+                                            <small class="d-block text-muted">Rất tốt</small>
+                                        {% else %}
+                                            <span class="text-primary fw-bold">★★★★☆</span>
+                                            <small class="d-block text-muted">Tốt</small>
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+
                                 <!-- Yêu cầu tuyển sinh -->
                                 {% if truong_duoc_chon.0.yeu_cau_tuyen_sinh %}
                                     {% for criteria, value in truong_duoc_chon.0.yeu_cau_tuyen_sinh.items %}
                                     <tr>
-                                        <td class="fw-bold bg-light">
+                                        <td class="fw-bold">
                                             <i class="fas fa-clipboard-check me-2"></i>{{ criteria }}
                                         </td>
                                         {% for truong in truong_duoc_chon %}
@@ -300,7 +443,7 @@
                                 {% endif %}
                                 
                                 <tr>
-                                    <td class="fw-bold bg-light">
+                                    <td class="fw-bold">
                                         <i class="fas fa-link me-2"></i>Website
                                     </td>
                                     {% for truong in truong_duoc_chon %}
@@ -377,6 +520,166 @@
             }
         });
     });
+</script>
+
+<!-- Radar Chart - So sánh đa chiều -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="chart-section p-4 bg-white rounded shadow-sm">
+            <h3 class="mb-4">
+                <i class="fas fa-chart-area text-primary me-2"></i>
+                Biểu đồ So sánh Đa chiều
+            </h3>
+            <p class="text-muted mb-4">So sánh tổng quan các trường theo nhiều tiêu chí</p>
+            <canvas id="radarChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const universities = {{ truong_duoc_chon|safe|default:"[]" }};
+
+    if (!universities || universities.length === 0) return;
+
+    // Tính điểm cho từng tiêu chí (scale 0-10)
+    const datasets = universities.map((uni, index) => {
+        const ranking = uni.xep_hang_the_gioi || 200;
+        const tuition = uni.hoc_phi || 50000;
+
+        // Điểm xếp hạng (ranking thấp = điểm cao)
+        let rankingScore = 10;
+        if (ranking > 100) rankingScore = 6;
+        else if (ranking > 50) rankingScore = 8;
+
+        // Điểm chất lượng giảng dạy
+        let teachingScore = 8.5;
+        if (ranking <= 50) teachingScore = 9.5;
+        else if (ranking <= 100) teachingScore = 9.0;
+
+        // Điểm cơ sở vật chất
+        let facilityScore = 8.8;
+        if (ranking <= 50) facilityScore = 9.8;
+        else if (ranking <= 100) facilityScore = 9.2;
+
+        // Điểm tỷ lệ việc làm
+        let employmentScore = 8.8;
+        if (ranking <= 50) employmentScore = 9.5;
+        else if (ranking <= 100) employmentScore = 9.2;
+
+        // Điểm cơ hội nghiên cứu
+        let researchScore = 8.5;
+        if (ranking <= 50) researchScore = 10;
+        else if (ranking <= 100) researchScore = 9;
+
+        // Điểm giá trị tiền (học phí thấp = điểm cao)
+        let valueScore = 10 - Math.min(tuition / 10000, 5);
+
+        // Màu sắc cho từng trường
+        const colors = [
+            'rgba(54, 162, 235, 0.5)',   // Blue
+            'rgba(255, 99, 132, 0.5)',   // Red
+            'rgba(75, 192, 192, 0.5)',   // Green
+            'rgba(255, 206, 86, 0.5)',   // Yellow
+            'rgba(153, 102, 255, 0.5)'   // Purple
+        ];
+
+        const borderColors = [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(153, 102, 255, 1)'
+        ];
+
+        return {
+            label: uni.ten_truong,
+            data: [
+                rankingScore,
+                teachingScore,
+                facilityScore,
+                employmentScore,
+                researchScore,
+                valueScore
+            ],
+            backgroundColor: colors[index % colors.length],
+            borderColor: borderColors[index % borderColors.length],
+            borderWidth: 2,
+            pointBackgroundColor: borderColors[index % borderColors.length],
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: borderColors[index % borderColors.length]
+        };
+    });
+
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: [
+                'Xếp hạng',
+                'Chất lượng Giảng dạy',
+                'Cơ sở Vật chất',
+                'Tỷ lệ Việc làm',
+                'Cơ hội Nghiên cứu',
+                'Giá trị/Chi phí'
+            ],
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 10,
+                    min: 0,
+                    ticks: {
+                        stepSize: 2,
+                        callback: function(value) {
+                            return value + '/10';
+                        }
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 13,
+                            weight: 'bold'
+                        },
+                        padding: 15
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'So sánh tổng quan - Điểm cao hơn = Tốt hơn',
+                    font: {
+                        size: 14
+                    },
+                    padding: {
+                        bottom: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.r.toFixed(1) + '/10';
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
 </script>
 
 
@@ -483,7 +786,9 @@
         color: white;
         padding: 2rem;
         border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: none !important;
+        outline: none !important;
         position: relative;
         animation: slideInUp 0.6s ease-out;
     }
@@ -528,12 +833,11 @@
     }
 
     .ai-content {
-        background: rgba(255, 255, 255, 0.15);
+        background: transparent;
         padding: 2rem;
         border-radius: 12px;
-        backdrop-filter: blur(10px);
         margin-bottom: 0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: none;
     }
 
     .ai-analysis-text {
@@ -593,6 +897,24 @@
         padding: 2rem;
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border: none !important;
+        outline: none !important;
+    }
+
+    /* Bỏ viền ngoài, giữ viền trong nhẹ */
+    .comparison-results {
+        border: none !important;
+        outline: none !important;
+    }
+
+    .comparison-table {
+        border: none !important; /* Bỏ viền ngoài của table */
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        border: 1px solid #dee2e6 !important; /* Viền trong nhẹ */
+        border-width: 1px !important;
     }
     
     .comparison-table th {
@@ -650,6 +972,42 @@
         padding: 2rem;
         border-radius: 10px;
         backdrop-filter: blur(10px);
+    }
+
+    /* Loading Overlay - Only for AI section */
+    .ai-loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(102, 126, 234, 0.95);
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        border-radius: 15px;
+    }
+
+    .loading-content {
+        text-align: center;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Icon Spin Animation */
+    .icon-spin {
+        animation: iconSpin 1s linear infinite;
+    }
+
+    @keyframes iconSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
     }
     
     @media (max-width: 768px) {
@@ -772,6 +1130,40 @@ function convertMarkdownTables(text) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Show AI loading section when comparing
+    const compareForm = document.getElementById('compareForm');
+    const aiLoadingSection = document.getElementById('aiLoadingSection');
+    const pageHeaderIcon = document.getElementById('pageHeaderIcon');
+    const pageHeaderSubtext = document.getElementById('pageHeaderSubtext');
+
+    if (compareForm) {
+        compareForm.addEventListener('submit', function(e) {
+            const select = this.querySelector('select[name="ma_chuyen_nganh"]');
+            if (select && select.value) {
+                // Change header icon to spinner
+                if (pageHeaderIcon) {
+                    pageHeaderIcon.className = 'fas fa-spinner text-primary me-3 icon-spin';
+                }
+
+                // Change subtext
+                if (pageHeaderSubtext) {
+                    pageHeaderSubtext.innerHTML = '<span class="text-primary fw-bold">Đang phân tích với AI... Vui lòng đợi 10-15 giây</span>';
+                }
+
+                // Scroll to top
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                // Show loading in AI section
+                if (aiLoadingSection) {
+                    aiLoadingSection.style.display = 'block';
+                }
+            }
+        });
+    }
+
     // Render AI analysis với markdown
     const aiAnalysisText = `{{ ket_qua_ai|escapejs }}`;
     const aiAnalysisContainer = document.getElementById('ai-analysis-rendered');

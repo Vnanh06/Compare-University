@@ -1,0 +1,63 @@
+# ============================================
+# LOCAL DEVELOPMENT REQUIREMENTS (Windows + SQL Server)
+# Không bao gồm PostgreSQL và production-only packages
+# ============================================
+
+# Django Framework
+Django==4.2.7
+
+# Database - SQL Server ONLY (no PostgreSQL)
+mssql-django==1.5
+pyodbc
+
+# Static files (for collectstatic)
+whitenoise==6.6.0
+
+# Configuration
+python-decouple==3.8
+python-dotenv==1.0.0
+pytz>=2023.3
+dj-database-url==2.1.0
+
+# Date/time utilities
+python-dateutil==2.8.2
+
+# Network & HTTP
+charset-normalizer==3.3.0
+urllib3==2.0.7
+certifi==2023.11.17
+idna==3.6
+
+# ============================================
+# AI & ML (CPU-ONLY versions)
+# ============================================
+
+# Google Gemini AI (updated for Python 3.13 compatibility)
+google-generativeai>=0.3.2
+google-ai-generativelanguage>=0.4.0
+google-api-core>=2.28.1
+google-auth>=2.42.1
+googleapis-common-protos>=1.71.0
+grpcio>=1.76.0
+grpcio-status>=1.62.3
+proto-plus>=1.26.1
+protobuf>=4.21.0,<5.0.0
+
+# ChromaDB (Vector Database) - updated for Python 3.13
+chromadb>=0.4.22
+
+# PyTorch CPU-ONLY (updated for Python 3.13 compatibility)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
+# Sentence Transformers (updated for Python 3.13 compatibility)
+sentence-transformers>=2.7.0
+huggingface-hub>=0.23.0
+transformers>=4.40.0
+tokenizers>=0.19.1
+
+# ONNX Runtime (CPU-only) - updated for Python 3.13
+onnxruntime>=1.23.2
+
+# NumPy
+numpy<2.0
