@@ -13,6 +13,14 @@ echo "Timeout: 120s"
 echo "=========================================="
 echo ""
 
+# Create database tables (if not exist)
+echo "Creating database tables..."
+python manage.py create_tables || echo "Tables already exist, continuing..."
+
+# Load initial data (if database is empty)
+echo "Loading initial data..."
+python manage.py loaddata database_export.json || echo "Data already loaded or file not found, continuing..."
+
 # Run migrations (safe to run multiple times)
 echo "Running database migrations..."
 python manage.py migrate --noinput || echo "Migrations failed, but continuing..."
