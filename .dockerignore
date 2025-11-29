@@ -31,11 +31,11 @@ db.sqlite3-journal
 *.swo
 *~
 
-# ChromaDB data (will be rebuilt on deploy)
-chromadb_data/
+# ChromaDB data - NEEDED for production deployment
+# chromadb_data/
 
-# Database exports (large files)
-database_export.json
+# Database exports - NEEDED for loading initial data
+# database_export.json
 *.bacpac
 University-new.bacpac
 
