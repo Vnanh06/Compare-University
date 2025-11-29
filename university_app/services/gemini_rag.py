@@ -43,6 +43,11 @@ class GeminiChatbotRAG:
 
         universities = University.objects.select_related('country').all()  # LẤY TẤT CẢ
 
+        # Kiểm tra nếu database trống, skip để tránh OOM
+        if not universities.exists():
+            logger.warning("Database trống, bỏ qua việc build ChromaDB để tránh OOM. Hãy load data trước!")
+            return
+
         documents = []
         metadatas = []
         ids = []

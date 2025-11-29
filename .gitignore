@@ -30,7 +30,7 @@ db.sqlite3-journal
 chromadb_data/
 
 # Database exports (can be large)
-database_export.json
+# database_export.json  ← Cần commit file này để load data trên Render
 *.bacpac
 
 # Virtual environment

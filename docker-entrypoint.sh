@@ -25,9 +25,7 @@ python manage.py loaddata database_export.json || echo "Data already loaded or f
 echo "Running database migrations..."
 python manage.py migrate --noinput || echo "Migrations failed, but continuing..."
 
-# Rebuild AI Chatbot ChromaDB (after data is loaded)
-echo "Rebuilding AI Chatbot vector database..."
-python manage.py rebuild_chatbot || echo "ChromaDB rebuild failed or already exists, continuing..."
+# Note: ChromaDB will be built lazily on first chatbot query to avoid OOM during startup
 
 # Collect static files (if not done in build)
 echo "Collecting static files..."
