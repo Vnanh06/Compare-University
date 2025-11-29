@@ -27,7 +27,7 @@ db.sqlite3-journal
 *~
 
 # ChromaDB
-chromadb_data/
+# chromadb_data/  ← Commit folder này để deploy lên Render
 
 # Database exports (can be large)
 # database_export.json  ← Cần commit file này để load data trên Render
