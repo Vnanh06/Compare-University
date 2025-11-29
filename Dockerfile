@@ -80,8 +80,7 @@ RUN chown -R appuser:appuser /app/.cache
 # Switch to non-root user
 USER appuser
 
-# Collect static files
-RUN python manage.py collectstatic --noinput || true
+# Note: collectstatic will run in docker-entrypoint.sh with DATABASE_URL available
 
 # Expose port
 EXPOSE 8080
